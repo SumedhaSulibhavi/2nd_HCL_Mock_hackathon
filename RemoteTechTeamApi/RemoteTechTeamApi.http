@@ -1,0 +1,6 @@
+@RemoteTechTeamApi_HostAddress = http://localhost:5227
+
+GET {{RemoteTechTeamApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
