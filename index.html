@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hype & Health — Remote Team Wellness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hue-bg: 142;
+  --c-bg: #0b0f0e;
+  --c-surface: #141a18;
+  --c-surface2: #1c2421;
+  --c-surface3: #222d2a;
+  --c-border: rgba(255,255,255,0.07);
+  --c-border2: rgba(255,255,255,0.12);
+  --c-text: #e8f0ed;
+  --c-text2: #8aaa9c;
+  --c-text3: #4d6e62;
+  --c-accent: #2cff8f;
+  --c-accent2: #00c96b;
+  --c-accent3: rgba(44,255,143,0.12);
+  --c-amber: #ffb94a;
+  --c-amber-bg: rgba(255,185,74,0.1);
+  --c-red: #ff6b6b;
+  --c-red-bg: rgba(255,107,107,0.1);
+  --c-blue: #5eb6ff;
+  --c-blue-bg: rgba(94,182,255,0.1);
+  --c-purple: #b78bff;
+  --c-purple-bg: rgba(183,139,255,0.1);
+  --r: 12px;
+  --r-sm: 8px;
+  --shadow: 0 0 0 1px var(--c-border), 0 8px 32px rgba(0,0,0,0.4);
+  font-family: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+input, select, textarea, button { font-family: inherit; }
+
+/* ── scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border2); border-radius: 4px; }
+
+/* ── layout ── */
+.page { display: none; min-height: 100vh; flex-direction: column; }
+.page.active { display: flex; }
+
+/* ── navbar ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  height: 60px; display: flex; align-items: center; gap: 24px;
+  padding: 0 32px;
+  background: rgba(11,15,14,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  cursor: pointer; user-select: none; white-space: nowrap;
+}
+.nav-logo span { color: var(--c-text2); -webkit-text-fill-color: var(--c-text2); font-weight: 400; font-size: 14px; margin-left: 6px; }
+.nav-links { display: flex; gap: 4px; align-items: center; }
+.nav-link {
+  padding: 6px 14px; border-radius: 8px; font-size: 14px; color: var(--c-text2);
+  cursor: pointer; transition: all .2s; border: none; background: none;
+}
+.nav-link:hover { background: var(--c-surface2); color: var(--c-text); }
+.nav-link.active { background: var(--c-accent3); color: var(--c-accent); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent2), var(--c-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: #0b0f0e; cursor: pointer;
+  flex-shrink: 0;
+}
+.badge-role {
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--c-surface2); border: 1px solid var(--c-border2); color: var(--c-text2);
+}
+.break-pill {
+  font-size: 11px; padding: 4px 10px; border-radius: 20px;
+  background: var(--c-amber-bg); color: var(--c-amber);
+  border: 1px solid rgba(255,185,74,0.2);
+  display: flex; align-items: center; gap: 5px;
+}
+.break-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c-amber); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+.btn-logout {
+  padding: 6px 14px; border-radius: 8px; font-size: 13px;
+  background: none; border: 1px solid var(--c-border2); color: var(--c-text2);
+  cursor: pointer; transition: all .2s;
+}
+.btn-logout:hover { border-color: var(--c-red); color: var(--c-red); }
+
+/* ── footer ── */
+footer {
+  border-top: 1px solid var(--c-border); padding: 20px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--c-text3);
+  background: var(--c-surface);
+  flex-shrink: 0;
+}
+
+/* ── main content ── */
+.content { flex: 1; }
+
+/* ── buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all .2s; border: none;
+}
+.btn-primary {
+  background: var(--c-accent); color: #0b0f0e;
+}
+.btn-primary:hover { background: #52ffaa; transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--c-surface2); color: var(--c-text);
+  border: 1px solid var(--c-border2);
+}
+.btn-secondary:hover { background: var(--c-surface3); border-color: var(--c-border2); }
+.btn-ghost { background: none; color: var(--c-text2); border: 1px solid var(--c-border); }
+.btn-ghost:hover { background: var(--c-surface2); color: var(--c-text); }
+.btn-danger { background: var(--c-red-bg); color: var(--c-red); border: 1px solid rgba(255,107,107,.2); }
+
+/* ── cards ── */
+.card {
+  background: var(--c-surface); border-radius: var(--r);
+  border: 1px solid var(--c-border); overflow: hidden;
+}
+.card-header {
+  padding: 18px 20px 0; display: flex; align-items: center; justify-content: space-between;
+}
+.card-body { padding: 16px 20px 20px; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--c-text2); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ── stat cards ── */
+.stat-card {
+  background: var(--c-surface); border-radius: var(--r); border: 1px solid var(--c-border);
+  padding: 20px; position: relative; overflow: hidden;
+}
+.stat-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--c-accent), transparent);
+}
+.stat-value { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 700; line-height: 1; margin: 8px 0 4px; }
+.stat-label { font-size: 12px; color: var(--c-text2); text-transform: uppercase; letter-spacing: .08em; }
+.stat-delta { font-size: 13px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.delta-up { color: var(--c-accent); }
+.delta-down { color: var(--c-red); }
+
+/* ── form elements ── */
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; color: var(--c-text2); margin-bottom: 6px; font-weight: 500; }
+.form-input {
+  width: 100%; padding: 10px 14px; background: var(--c-surface2);
+  border: 1px solid var(--c-border2); border-radius: var(--r-sm);
+  color: var(--c-text); font-size: 14px; transition: all .2s;
+  outline: none;
+}
+.form-input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent3); }
+.form-input::placeholder { color: var(--c-text3); }
+.form-select {
+  width: 100%; padding: 10px 14px; background: var(--c-surface2);
+  border: 1px solid var(--c-border2); border-radius: var(--r-sm);
+  color: var(--c-text); font-size: 14px; appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238aaa9c' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  outline: none; transition: all .2s;
+}
+.form-select:focus { border-color: var(--c-accent); }
+.form-error { font-size: 12px; color: var(--c-red); margin-top: 5px; display: none; }
+.form-error.show { display: block; }
+
+/* ── range slider ── */
+.slider-wrap { padding: 10px 0; }
+input[type=range] {
+  width: 100%; -webkit-appearance: none; height: 4px;
+  background: var(--c-surface3); border-radius: 4px; outline: none;
+  transition: background .2s;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--c-accent); cursor: pointer; box-shadow: 0 0 0 4px var(--c-accent3);
+  transition: transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+/* ── tags / chips ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  background: var(--c-surface2); border: 1px solid var(--c-border2); color: var(--c-text2);
+}
+.chip-green { background: rgba(44,255,143,.1); color: var(--c-accent); border-color: rgba(44,255,143,.2); }
+.chip-amber { background: var(--c-amber-bg); color: var(--c-amber); border-color: rgba(255,185,74,.2); }
+.chip-red { background: var(--c-red-bg); color: var(--c-red); border-color: rgba(255,107,107,.2); }
+.chip-blue { background: var(--c-blue-bg); color: var(--c-blue); border-color: rgba(94,182,255,.2); }
+.chip-purple { background: var(--c-purple-bg); color: var(--c-purple); border-color: rgba(183,139,255,.2); }
+
+/* ── alert banner ── */
+.alert {
+  border-radius: var(--r-sm); padding: 14px 18px; font-size: 14px;
+  display: flex; align-items: flex-start; gap: 12px;
+  border-left: 3px solid;
+}
+.alert-warning { background: var(--c-amber-bg); border-color: var(--c-amber); color: var(--c-amber); }
+.alert-danger { background: var(--c-red-bg); border-color: var(--c-red); color: var(--c-red); }
+.alert-success { background: var(--c-accent3); border-color: var(--c-accent); color: var(--c-accent); }
+.alert-info { background: var(--c-blue-bg); border-color: var(--c-blue); color: var(--c-blue); }
+.alert-body { flex: 1; }
+.alert-title { font-weight: 600; margin-bottom: 2px; }
+.alert-text { font-size: 13px; opacity: .85; color: var(--c-text); }
+
+/* ── modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+  padding: 24px;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--c-surface); border-radius: 16px; border: 1px solid var(--c-border2);
+  width: 100%; max-width: 480px; padding: 28px;
+  transform: translateY(16px); transition: transform .25s;
+  box-shadow: 0 32px 64px rgba(0,0,0,.5);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--c-text2); margin-bottom: 24px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+/* ─────────────────────────────────────────────
+   HOME PAGE
+───────────────────────────────────────────── */
+.home-hero {
+  min-height: calc(100vh - 60px);
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center;
+  padding: 80px 24px 60px;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 600px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(44,255,143,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--c-accent); font-weight: 500; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after { content: '—'; opacity: .4; }
+.hero-headline {
+  font-family: 'Syne', sans-serif; font-size: clamp(42px, 8vw, 80px); font-weight: 800;
+  line-height: 1.05; margin-bottom: 24px;
+  background: linear-gradient(160deg, #e8f0ed 20%, #4d9e7e 80%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  max-width: 800px;
+}
+.hero-sub { font-size: 18px; color: var(--c-text2); max-width: 520px; line-height: 1.7; margin-bottom: 40px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 80px; }
+.hero-features {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+  max-width: 880px; width: 100%;
+}
+.feature-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--r); padding: 28px 24px; text-align: left;
+  transition: border-color .25s, transform .25s;
+  cursor: default;
+}
+.feature-card:hover { border-color: var(--c-border2); transform: translateY(-3px); }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 10px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.fi-green { background: var(--c-accent3); }
+.fi-amber { background: var(--c-amber-bg); }
+.fi-blue { background: var(--c-blue-bg); }
+.feature-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.feature-desc { font-size: 14px; color: var(--c-text2); line-height: 1.6; }
+
+/* ─────────────────────────────────────────────
+   AUTH PAGES
+───────────────────────────────────────────── */
+.auth-page {
+  min-height: calc(100vh - 60px); display: flex;
+  align-items: center; justify-content: center; padding: 40px 24px;
+}
+.auth-card {
+  width: 100%; max-width: 420px;
+  background: var(--c-surface); border-radius: 20px;
+  border: 1px solid var(--c-border); padding: 40px;
+  box-shadow: 0 32px 64px rgba(0,0,0,.3);
+}
+.auth-logo {
+  font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 32px;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: block;
+}
+.auth-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.auth-sub { font-size: 14px; color: var(--c-text2); margin-bottom: 32px; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--c-border); }
+.auth-divider span { font-size: 12px; color: var(--c-text3); }
+.auth-footer { text-align: center; margin-top: 24px; font-size: 14px; color: var(--c-text2); }
+.auth-footer a { color: var(--c-accent); cursor: pointer; text-decoration: none; }
+.auth-footer a:hover { text-decoration: underline; }
+.show-pw { position: relative; }
+.show-pw .form-input { padding-right: 42px; }
+.show-pw-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--c-text3); cursor: pointer; font-size: 16px;
+  transition: color .2s;
+}
+.show-pw-btn:hover { color: var(--c-text2); }
+.role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.role-card {
+  border: 1.5px solid var(--c-border2); border-radius: var(--r-sm); padding: 14px;
+  cursor: pointer; transition: all .2s; text-align: center;
+}
+.role-card.selected { border-color: var(--c-accent); background: var(--c-accent3); }
+.role-card .role-icon { font-size: 24px; margin-bottom: 6px; }
+.role-card .role-name { font-size: 13px; font-weight: 500; }
+
+/* ─────────────────────────────────────────────
+   EMPLOYEE DASHBOARD
+───────────────────────────────────────────── */
+.dashboard-wrap { padding: 32px; }
+.page-header { margin-bottom: 32px; }
+.page-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.page-sub { font-size: 15px; color: var(--c-text2); }
+.dashboard-grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.grid-4 { grid-template-columns: repeat(4,1fr); }
+
+/* dynamic hue strip */
+.hue-strip {
+  height: 3px; width: 100%;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-amber));
+  background-size: var(--strip-pct, 75%) 100%;
+  background-repeat: no-repeat;
+}
+
+/* daily survey */
+.survey-widget {
+  background: linear-gradient(135deg, rgba(44,255,143,.06), rgba(94,182,255,.06));
+  border: 1px solid rgba(44,255,143,.2); border-radius: var(--r);
+  padding: 28px;
+}
+.survey-emoji-row { display: flex; justify-content: space-between; margin: 8px 0 4px; font-size: 22px; }
+.survey-score-display {
+  font-family: 'Syne', sans-serif; font-size: 56px; font-weight: 800;
+  text-align: center; color: var(--c-accent); line-height: 1; margin: 12px 0;
+}
+.survey-label { text-align: center; font-size: 15px; color: var(--c-text2); margin-bottom: 20px; }
+
+/* mood chart */
+.sparkline-wrap { height: 80px; position: relative; overflow: hidden; }
+.spark-svg { width: 100%; height: 100%; }
+
+/* kudos board */
+.kudos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; }
+.kudos-card {
+  background: var(--c-surface2); border-radius: var(--r-sm); padding: 18px;
+  border: 1px solid var(--c-border); transition: border-color .2s;
+  position: relative; overflow: hidden;
+}
+.kudos-card::before {
+  content: '✦'; position: absolute; top: 12px; right: 14px;
+  font-size: 16px; color: var(--c-amber); opacity: .6;
+}
+.kudos-card:hover { border-color: rgba(255,185,74,.3); }
+.kudos-msg { font-size: 14px; line-height: 1.6; margin-bottom: 14px; color: var(--c-text); }
+.kudos-from { font-size: 12px; color: var(--c-text3); display: flex; align-items: center; gap: 6px; }
+.kudos-from .mini-av {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--c-surface3);
+  display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600;
+  color: var(--c-accent); border: 1px solid var(--c-border2);
+}
+
+/* break timer */
+.break-card {
+  background: var(--c-amber-bg); border: 1px solid rgba(255,185,74,.2);
+  border-radius: var(--r-sm); padding: 16px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.break-ring {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: conic-gradient(var(--c-amber) 0%, var(--c-amber) var(--ring-pct,65%), rgba(255,185,74,.15) var(--ring-pct,65%));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--c-amber);
+  position: relative;
+}
+.break-ring::before {
+  content: ''; position: absolute; inset: 5px; border-radius: 50%;
+  background: rgba(255,185,74,.05);
+}
+
+/* ─────────────────────────────────────────────
+   MANAGER DASHBOARD
+───────────────────────────────────────────── */
+.burnout-banner {
+  background: var(--c-red-bg); border: 1px solid rgba(255,107,107,.25);
+  border-radius: var(--r-sm); padding: 16px 20px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.burnout-icon { font-size: 28px; }
+.burnout-text { flex: 1; }
+.burnout-title { font-weight: 600; color: var(--c-red); margin-bottom: 2px; }
+.burnout-sub { font-size: 13px; color: var(--c-text2); }
+
+/* chart placeholder */
+.chart-area {
+  width: 100%; height: 180px; position: relative; overflow: hidden;
+}
+.chart-bars {
+  display: flex; align-items: flex-end; gap: 6px; height: 100%; padding-top: 20px;
+}
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.bar {
+  width: 100%; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--c-accent2), rgba(44,255,143,.3));
+  transition: height .6s cubic-bezier(.34,1.56,.64,1);
+  min-height: 4px;
+}
+.bar-label { font-size: 10px; color: var(--c-text3); font-family: 'DM Mono', monospace; white-space: nowrap; }
+.line-chart { position: relative; height: 160px; }
+.line-svg { width: 100%; height: 100%; }
+
+/* employee list */
+.emp-table { width: 100%; border-collapse: collapse; }
+.emp-table th {
+  text-align: left; font-size: 11px; color: var(--c-text3);
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 10px 14px 10px; border-bottom: 1px solid var(--c-border);
+  font-weight: 500;
+}
+.emp-table td { padding: 12px 14px; font-size: 14px; border-bottom: 1px solid var(--c-border); vertical-align: middle; }
+.emp-table tr:last-child td { border-bottom: none; }
+.emp-table tr:hover td { background: var(--c-surface2); }
+.emp-name { display: flex; align-items: center; gap: 10px; }
+.emp-av {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: var(--c-surface3); display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 600; color: var(--c-accent);
+  border: 1px solid var(--c-border2);
+}
+.mood-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  font-family: 'DM Mono', monospace;
+}
+.mood-high { background: rgba(44,255,143,.12); color: var(--c-accent); }
+.mood-mid { background: var(--c-amber-bg); color: var(--c-amber); }
+.mood-low { background: var(--c-red-bg); color: var(--c-red); }
+
+/* dept filter */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-chip {
+  padding: 5px 14px; border-radius: 20px; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--c-border2); background: var(--c-surface2); color: var(--c-text2);
+  transition: all .2s;
+}
+.filter-chip.active { background: var(--c-accent3); color: var(--c-accent); border-color: rgba(44,255,143,.3); }
+
+/* date range */
+.date-range { display: flex; gap: 10px; align-items: center; }
+.date-range .form-input { width: auto; }
+
+/* ─────────────────────────────────────────────
+   EMPLOYEE DETAIL
+───────────────────────────────────────────── */
+.profile-hero {
+  background: linear-gradient(135deg, var(--c-surface), var(--c-surface2));
+  border: 1px solid var(--c-border); border-radius: var(--r);
+  padding: 32px; display: flex; gap: 24px; align-items: flex-start;
+}
+.profile-av-lg {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent2), var(--c-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: #0b0f0e;
+  flex-shrink: 0; border: 3px solid rgba(44,255,143,.3);
+}
+.profile-name { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.profile-meta { font-size: 14px; color: var(--c-text2); display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.profile-meta span { display: flex; align-items: center; gap: 5px; }
+
+/* ── animations ── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
+.animate-in { animation: fadeIn .35s ease forwards; }
+.stagger > * { opacity: 0; animation: fadeIn .4s ease forwards; }
+.stagger > *:nth-child(1){animation-delay:.05s}
+.stagger > *:nth-child(2){animation-delay:.1s}
+.stagger > *:nth-child(3){animation-delay:.15s}
+.stagger > *:nth-child(4){animation-delay:.2s}
+.stagger > *:nth-child(5){animation-delay:.25s}
+.stagger > *:nth-child(6){animation-delay:.3s}
+
+/* ── responsive ── */
+@media(max-width:768px) {
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .hero-features{grid-template-columns:1fr}
+  .dashboard-wrap{padding:20px 16px}
+  nav{padding:0 16px}
+}
+@media(max-width:500px) {
+  .hero-actions{flex-direction:column;align-items:stretch;width:100%;max-width:260px}
+  .auth-card{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     SHARED NAVBAR
+═══════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="go('home')">H&H <span>wellness</span></div>
+
+  <div class="nav-links" id="nav-links-auth" style="display:none">
+    <button class="nav-link" id="navDash" onclick="goDashboard()">Dashboard</button>
+    <button class="nav-link" id="navKudos" onclick="go('employee'); scrollKudos()">Kudos Board</button>
+  </div>
+
+  <div class="nav-right">
+    <div class="break-pill" id="break-pill" style="display:none">
+      <span id="break-timer-text">Break in 23:14</span>
+    </div>
+    <span class="badge-role" id="nav-role" style="display:none">Employee</span>
+    <div class="avatar" id="nav-avatar" style="display:none">U</div>
+    <span id="nav-username" style="font-size:13px;color:var(--c-text2);display:none"></span>
+    <button class="btn-logout" id="nav-logout" style="display:none" onclick="logout()">Sign out</button>
+    <button class="btn btn-primary" id="nav-login-btn" onclick="go('login')" style="padding:7px 16px;font-size:13px">Sign in</button>
+    <button class="btn btn-secondary" id="nav-reg-btn" onclick="go('register')" style="padding:7px 16px;font-size:13px">Register</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <main class="content">
+    <section class="home-hero">
+      <div class="hero-glow"></div>
+      <p class="hero-eyebrow">Remote Team Wellness</p>
+      <h1 class="hero-headline">Track your team's vibe,<br>celebrate every win.</h1>
+      <p class="hero-sub">Daily mood check-ins, kudos recognition, and burnout alerts — everything your remote team needs to thrive.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="go('login')" style="font-size:16px;padding:13px 28px">Get Started</button>
+        <button class="btn btn-secondary" onclick="go('register')" style="font-size:16px;padding:13px 28px">Create Account</button>
+      </div>
+      <div class="hero-features stagger">
+        <div class="feature-card">
+          <div class="feature-icon fi-green">🎖️</div>
+          <div class="feature-name">Kudos Recognition</div>
+          <div class="feature-desc">Send appreciation cards to teammates instantly. Public recognition builds culture and morale.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-amber">📊</div>
+          <div class="feature-name">Mood Tracking</div>
+          <div class="feature-desc">Daily 1–10 mood check-ins with personal history. Spot trends before they become issues.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon fi-blue">🔥</div>
+          <div class="feature-name">Burnout Alerts</div>
+          <div class="feature-desc">Automated burnout detection for managers. Anonymous team analytics protect individual privacy.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <span>© 2025 Hype & Health — Sprint Squad</span>
+    <div class="break-pill" style="border:none;background:none;color:var(--c-text3)">Next break in 23:14</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE: LOGIN
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <main class="content">
+    <div class="auth-page">
+      <div class="auth-card animate-in">
+        <span class="auth-logo">H&H</span>
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-sub">Sign in to your workspace</p>
+
+        <div id="login-error" class="alert alert-danger" style="display:none;margin-bottom:18px">
+          <span>⚠</span>
+          <div class="alert-body">
+            <div class="alert-title">Invalid credentials</div>
+            <div class="alert-text">Check your email and password and try again.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="login-email" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="show-pw">
+            <input class="form-input" type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password">
+            <button class="show-pw-btn" onclick="togglePw('login-pw',this)">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="doLogin()">
+          Sign in
+        </button>
+        <div class="auth-footer">No account? <a onclick="go('register')">Create one free</a></div>
+
+        <div class="auth-divider"><span>demo accounts</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn btn-ghost" style="justify-content:center;font-size:13px" onclick="quickLogin('employee')">👷 Employee</button>
+          <button class="btn btn-ghost" style="justify-content:center;font-size:13px" onclick="quickLogin('manager')">👔 Manager</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE: REGISTER
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-register">
+  <main class="content">
+    <div class="auth-page">
+      <div class="auth-card animate-in">
+        <span class="auth-logo">H&H</span>
+        <h2 class="auth-title">Join your team</h2>
+        <p class="auth-sub">Create your workspace account</p>
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" id="reg-name" placeholder="Alex Chen">
+          <span class="form-error" id="err-name">Username is required</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="alex@company.com">
+          <span class="form-error" id="err-email">Valid email required</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="show-pw">
+            <input class="form-input" type="password" id="reg-pw" placeholder="min 8 characters">
+            <button class="show-pw-btn" onclick="togglePw('reg-pw',this)">👁</button>
+          </div>
+          <span class="form-error" id="err-pw">Minimum 8 characters</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <select class="form-select" id="reg-dept">
+            <option value="">Select department…</option>
+            <option>Engineering</option><option>Design</option>
+            <option>Product</option><option>Marketing</option><option>Operations</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <div class="role-cards" id="role-select">
+            <div class="role-card selected" data-role="Employee" onclick="selectRole(this)">
+              <div class="role-icon">👷</div>
+              <div class="role-name">Employee</div>
+            </div>
+            <div class="role-card" data-role="Manager" onclick="selectRole(this)">
+              <div class="role-icon">👔</div>
+              <div class="role-name">Manager</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;margin-top:4px" onclick="doRegister()">
+          Create account
+        </button>
+        <div class="auth-footer">Already have an account? <a onclick="go('login')">Sign in</a></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE: EMPLOYEE DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-employee">
+  <div class="hue-strip" id="hue-strip"></div>
+  <main class="content">
+    <div class="dashboard-wrap">
+      <div class="page-header animate-in">
+        <h1 class="page-title">Good morning, <span id="emp-name">Alex</span> 👋</h1>
+        <p class="page-sub">Here's your wellness snapshot for today — May 23, 2025</p>
+      </div>
+
+      <!-- Break Alert -->
+      <div class="break-card" style="margin-bottom:20px">
+        <div class="break-ring" id="break-ring" style="--ring-pct:65%">
+          <span id="break-ring-time" style="position:relative;z-index:1">23:14</span>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;color:var(--c-amber)">Scheduled Break</div>
+          <div style="font-size:13px;color:var(--c-text2);margin-top:2px">Your next break is in 23 minutes. Staying rested keeps you at peak performance.</div>
+        </div>
+        <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px;flex-shrink:0">Snooze</button>
+      </div>
+
+      <!-- Burnout Alert (hidden by default) -->
+      <div class="burnout-banner" id="emp-burnout" style="display:none">
+        <div class="burnout-icon">⚠️</div>
+        <div class="burnout-text">
+          <div class="burnout-title">Team mood has been low for 3+ days</div>
+          <div class="burnout-sub">Your manager has been notified. Consider reaching out to HR if you need support.</div>
+        </div>
+        <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px" onclick="this.closest('.burnout-banner').style.display='none'">Dismiss</button>
+      </div>
+
+      <div class="dashboard-grid grid-2" style="margin-bottom:20px">
+        <!-- Daily Survey -->
+        <div id="survey-widget-wrap">
+          <div class="survey-widget animate-in">
+            <div class="card-title" style="margin-bottom:16px">📋 Daily Mood Check-in</div>
+            <div class="survey-score-display" id="survey-score-num">7</div>
+            <div class="survey-label" id="survey-score-label">Feeling Good 😊</div>
+            <div class="slider-wrap">
+              <div class="survey-emoji-row">
+                <span title="Very Low">😞</span><span title="Low">😕</span><span title="Neutral">😐</span>
+                <span title="Good">🙂</span><span title="Great">😄</span>
+              </div>
+              <input type="range" min="1" max="10" value="7" id="mood-slider" oninput="updateSlider(this.value)">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--c-text3);margin-top:4px;font-family:'DM Mono',monospace">
+                <span>1</span><span>5</span><span>10</span>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:16px;margin-bottom:0">
+              <label class="form-label">Notes (optional)</label>
+              <textarea class="form-input" id="mood-notes" rows="2" placeholder="What's on your mind today?"></textarea>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" onclick="submitMood()">
+              Submit Check-in
+            </button>
+          </div>
+        </div>
+        <div id="survey-done-wrap" style="display:none">
+          <div class="card" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;border-color:rgba(44,255,143,.2);background:var(--c-accent3)">
+            <div style="font-size:48px;margin-bottom:12px">✅</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--c-accent)">Check-in Complete!</div>
+            <div style="font-size:14px;color:var(--c-text2);margin-top:8px">You logged a <strong id="submitted-score" style="color:var(--c-accent)">7</strong>/10 today. See you tomorrow!</div>
+          </div>
+        </div>
+
+        <!-- Personal Mood Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📈 My Mood — Last 14 Days</span>
+          </div>
+          <div class="card-body">
+            <div class="line-chart">
+              <svg class="line-svg" id="personal-spark" viewBox="0 0 400 120" preserveAspectRatio="none"></svg>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--c-text3);margin-top:6px;font-family:'DM Mono',monospace">
+              <span>May 10</span><span>May 23</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kudos Board -->
+      <div id="kudos-section" class="card" style="margin-bottom:20px">
+        <div class="card-header" style="padding:20px 20px 0;flex-wrap:wrap;gap:12px">
+          <span class="card-title">✦ Kudos Board</span>
+          <button class="btn btn-secondary" style="font-size:13px;padding:7px 14px" onclick="openKudosModal()">+ Send Kudos</button>
+        </div>
+        <div class="card-body">
+          <div class="kudos-grid" id="kudos-grid"></div>
+        </div>
+      </div>
+
+      <!-- Survey History -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📅 My Mood History</span>
+        </div>
+        <div class="card-body" id="survey-history"></div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <span>© 2025 Hype & Health — Sprint Squad</span>
+    <div class="break-pill" style="font-size:12px">Break in <span id="footer-break">23:14</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE: MANAGER DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-manager">
+  <main class="content">
+    <div class="dashboard-wrap">
+      <div class="page-header animate-in">
+        <h1 class="page-title">Manager Dashboard 🎯</h1>
+        <p class="page-sub">Team analytics for Engineering · May 2025</p>
+      </div>
+
+      <!-- Burnout Alert -->
+      <div class="burnout-banner" id="burnout-banner">
+        <div class="burnout-icon">🔥</div>
+        <div class="burnout-text">
+          <div class="burnout-title">Burnout Risk Detected</div>
+          <div class="burnout-sub">Team avg mood has been below 4.0 for 3 consecutive days. Consider scheduling 1:1s.</div>
+        </div>
+        <button class="btn btn-danger" style="font-size:12px;padding:7px 14px;flex-shrink:0" onclick="this.closest('.burnout-banner').style.display='none'">Dismiss</button>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="dashboard-grid grid-4 stagger" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-label">Today's Avg Mood</div>
+          <div class="stat-value" style="color:var(--c-accent)">6.4</div>
+          <div class="stat-delta delta-up">▲ 0.8 vs yesterday</div>
+        </div>
+        <div class="stat-card" style="--after-color:var(--c-blue)">
+          <div class="stat-label" >Response Rate</div>
+          <div class="stat-value" style="color:var(--c-blue)">87%</div>
+          <div class="stat-delta delta-up">▲ 5% this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sprint Velocity</div>
+          <div class="stat-value" style="color:var(--c-amber)">73%</div>
+          <div class="stat-delta delta-down">▼ 4% vs last sprint</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Kudos Sent</div>
+          <div class="stat-value" style="color:var(--c-purple)">24</div>
+          <div class="stat-delta delta-up">▲ 6 this week</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid grid-2" style="margin-bottom:20px">
+        <!-- Team Mood Trend Chart -->
+        <div class="card">
+          <div class="card-header" style="margin-bottom:16px">
+            <span class="card-title">📉 Team Mood Trend</span>
+            <div class="date-range">
+              <input type="date" class="form-input" value="2025-05-10" style="font-size:12px;padding:5px 10px;width:140px">
+              <span style="font-size:12px;color:var(--c-text3)">→</span>
+              <input type="date" class="form-input" value="2025-05-23" style="font-size:12px;padding:5px 10px;width:140px">
+            </div>
+          </div>
+          <div class="card-body" style="padding-top:0">
+            <div class="line-chart">
+              <svg class="line-svg" id="team-mood-chart" viewBox="0 0 400 120" preserveAspectRatio="none"></svg>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--c-text3);margin-top:6px;font-family:'DM Mono',monospace">
+              <span>May 10</span><span>May 23</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sprint / Productivity Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">⚡ Sprint Velocity</span>
+            <span class="chip chip-amber">Current Sprint</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <div class="chart-bars" id="sprint-chart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employee List -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:12px">
+          <span class="card-title">👥 Team Members</span>
+        </div>
+        <div class="card-body" style="padding-top:0">
+          <div class="filter-bar" id="dept-filter">
+            <div class="filter-chip active" onclick="filterDept(this,'All')">All</div>
+            <div class="filter-chip" onclick="filterDept(this,'Engineering')">Engineering</div>
+            <div class="filter-chip" onclick="filterDept(this,'Design')">Design</div>
+            <div class="filter-chip" onclick="filterDept(this,'Product')">Product</div>
+            <div class="filter-chip" onclick="filterDept(this,'Marketing')">Marketing</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="emp-table" id="emp-table">
+              <thead>
+                <tr>
+                  <th>Employee</th><th>Department</th><th>Avg Mood</th><th>Kudos</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="emp-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <span>© 2025 Hype & Health — Sprint Squad</span>
+    <span>Anonymised analytics — individual scores are never shared</span>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE: EMPLOYEE DETAIL
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <main class="content">
+    <div class="dashboard-wrap">
+      <button class="btn btn-ghost" style="margin-bottom:24px;font-size:13px" onclick="go('manager')">
+        ← Back to Dashboard
+      </button>
+      <div class="profile-hero animate-in" style="margin-bottom:24px">
+        <div class="profile-av-lg" id="detail-av">AC</div>
+        <div style="flex:1">
+          <div class="profile-name" id="detail-name">Alex Chen</div>
+          <div>
+            <span class="chip chip-blue" id="detail-dept">Engineering</span>
+            <span class="chip" style="margin-left:6px" id="detail-role">Employee</span>
+          </div>
+          <div class="profile-meta" id="detail-meta">
+            <span>📧 alex.chen@company.com</span>
+            <span>📅 Joined Jan 2024</span>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--c-text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Avg Mood</div>
+          <div style="font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--c-accent);line-height:1" id="detail-avg">7.2</div>
+          <div style="font-size:11px;color:var(--c-text3);margin-top:2px">Last 30 days</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid grid-2">
+        <!-- Mood Chart -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📈 Mood History</span></div>
+          <div class="card-body">
+            <div class="line-chart">
+              <svg class="line-svg" id="detail-chart" viewBox="0 0 400 120" preserveAspectRatio="none"></svg>
+            </div>
+            <div style="margin-top:8px;font-size:12px;color:var(--c-text3);text-align:center">
+              Anonymised aggregate — no individual daily scores shown
+            </div>
+          </div>
+        </div>
+
+        <!-- Kudos Received -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">✦ Kudos Received</span></div>
+          <div class="card-body" id="detail-kudos" style="display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto">
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL: SEND KUDOS
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="kudos-modal" onclick="closeKudosOnBg(event)">
+  <div class="modal">
+    <div class="modal-title">✦ Send Kudos</div>
+    <p class="modal-sub">Recognise a teammate's great work — it'll appear on the public board.</p>
+    <div class="form-group">
+      <label class="form-label">To</label>
+      <select class="form-select" id="kudos-receiver">
+        <option value="">Choose a teammate…</option>
+        <option>Jordan Lee</option><option>Sam Park</option><option>Maya Patel</option>
+        <option>Chris Nguyen</option><option>Taylor Kim</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label class="form-label">Message</label>
+      <textarea class="form-input" id="kudos-msg" rows="3" placeholder="Your kudos message…" maxlength="1000"></textarea>
+      <div style="text-align:right;font-size:11px;color:var(--c-text3);margin-top:4px">
+        <span id="kudos-char">0</span>/1000
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeKudos()">Cancel</button>
+      <button class="btn btn-primary" onclick="postKudos()">Send Kudos ✦</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+const STATE = {
+  currentUser: null,
+  moodSubmitted: false,
+  breakSeconds: 23 * 60 + 14,
+  selectedRole: 'Employee',
+  kudosData: [
+    {id:1, sender:'Jordan Lee', receiver:'Alex Chen', msg:'Incredible work on the API integration — finished 2 days ahead of schedule! 🚀', ts:'Today, 9:14am'},
+    {id:2, sender:'Sam Park', receiver:'Maya Patel', msg:'Your design work on the dashboard is absolutely stunning. The whole team is impressed.', ts:'Yesterday'},
+    {id:3, sender:'Maya Patel', receiver:'Chris Nguyen', msg:'Thank you for staying late to help debug the auth flow. You saved the sprint!', ts:'May 21'},
+    {id:4, sender:'Chris Nguyen', receiver:'Taylor Kim', msg:'Best sprint retro facilitation I\'ve seen. Really helped the team align on priorities.', ts:'May 20'},
+    {id:5, sender:'Taylor Kim', receiver:'Jordan Lee', msg:'Solid code reviews every single day — your feedback makes everyone a better developer.', ts:'May 19'},
+    {id:6, sender:'Alex Chen', receiver:'Sam Park', msg:'The new component library is a game changer. Shipping features 3x faster already.', ts:'May 18'},
+  ],
+  employees: [
+    {id:1, name:'Jordan Lee', dept:'Engineering', avgMood:8.1, kudos:4, initials:'JL', email:'jordan.lee@company.com'},
+    {id:2, name:'Sam Park', dept:'Design', avgMood:6.8, kudos:3, initials:'SP', email:'sam.park@company.com'},
+    {id:3, name:'Maya Patel', dept:'Product', avgMood:7.4, kudos:5, initials:'MP', email:'maya.patel@company.com'},
+    {id:4, name:'Chris Nguyen', dept:'Engineering', avgMood:3.2, kudos:2, initials:'CN', email:'chris.nguyen@company.com'},
+    {id:5, name:'Taylor Kim', dept:'Marketing', avgMood:7.9, kudos:6, initials:'TK', email:'taylor.kim@company.com'},
+    {id:6, name:'Alex Chen', dept:'Engineering', avgMood:7.2, kudos:3, initials:'AC', email:'alex.chen@company.com'},
+  ],
+  moodHistory: [5,6,7,6,8,7,9,7,6,5,4,6,7,7],
+  teamMoodData: [7.1,6.8,6.5,5.2,4.8,4.1,5.4,6.1,6.8,7.0,6.4,5.9,6.4,6.4],
+  sprintData: [
+    {label:'Sp.1',v:88},{label:'Sp.2',v:72},{label:'Sp.3',v:95},{label:'Sp.4',v:61},{label:'Sp.5',v:73}
+  ],
+  currentDept: 'All',
+};
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function go(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  window.scrollTo(0,0);
+  updateNav();
+  if(pageId === 'employee') renderEmployeeDashboard();
+  if(pageId === 'manager') renderManagerDashboard();
+}
+
+function goDashboard() {
+  if(!STATE.currentUser) { go('login'); return; }
+  go(STATE.currentUser.role === 'Manager' ? 'manager' : 'employee');
+}
+
+function scrollKudos() {
+  setTimeout(() => {
+    const el = document.getElementById('kudos-section');
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  }, 100);
+}
+
+function updateNav() {
+  const u = STATE.currentUser;
+  const auth = !!u;
+  document.getElementById('nav-links-auth').style.display = auth ? 'flex' : 'none';
+  document.getElementById('nav-role').style.display = auth ? 'flex' : 'none';
+  document.getElementById('nav-avatar').style.display = auth ? 'flex' : 'none';
+  document.getElementById('nav-username').style.display = auth ? 'block' : 'none';
+  document.getElementById('nav-logout').style.display = auth ? 'block' : 'none';
+  document.getElementById('nav-login-btn').style.display = auth ? 'none' : 'block';
+  document.getElementById('nav-reg-btn').style.display = auth ? 'none' : 'block';
+  document.getElementById('break-pill').style.display = auth ? 'flex' : 'none';
+  if(auth) {
+    document.getElementById('nav-role').textContent = u.role;
+    document.getElementById('nav-avatar').textContent = u.initials;
+    document.getElementById('nav-username').textContent = u.name;
+  }
+}
+
+/* ════════════════════════════════════════
+   AUTH
+════════════════════════════════════════ */
+function quickLogin(role) {
+  if(role === 'employee') {
+    STATE.currentUser = {name:'Alex Chen', role:'Employee', initials:'AC', dept:'Engineering'};
+  } else {
+    STATE.currentUser = {name:'Taylor Kim', role:'Manager', initials:'TK', dept:'Engineering'};
+  }
+  goDashboard();
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const errEl = document.getElementById('login-error');
+  if(!email || !pw) { errEl.style.display='flex'; return; }
+  // Demo logic
+  if(email.includes('manager') || pw === 'manager') {
+    STATE.currentUser = {name:'Taylor Kim', role:'Manager', initials:'TK', dept:'Engineering'};
+  } else {
+    STATE.currentUser = {name:'Alex Chen', role:'Employee', initials:'AC', dept:'Engineering'};
+  }
+  errEl.style.display = 'none';
+  goDashboard();
+}
+
+function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-pw').value;
+  let valid = true;
+  if(!name){ document.getElementById('err-name').classList.add('show'); valid=false; } else document.getElementById('err-name').classList.remove('show');
+  if(!email||!email.includes('@')){ document.getElementById('err-email').classList.add('show'); valid=false; } else document.getElementById('err-email').classList.remove('show');
+  if(pw.length < 8){ document.getElementById('err-pw').classList.add('show'); valid=false; } else document.getElementById('err-pw').classList.remove('show');
+  if(!valid) return;
+  const ini = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  STATE.currentUser = {name, role: STATE.selectedRole, initials: ini, dept:'Engineering'};
+  goDashboard();
+}
+
+function selectRole(el) {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  STATE.selectedRole = el.dataset.role;
+}
+
+function logout() {
+  STATE.currentUser = null;
+  STATE.moodSubmitted = false;
+  go('home');
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if(inp.type === 'password') { inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁'; }
+}
+
+/* ════════════════════════════════════════
+   EMPLOYEE DASHBOARD
+════════════════════════════════════════ */
+function renderEmployeeDashboard() {
+  const u = STATE.currentUser;
+  if(!u) return;
+  document.getElementById('emp-name').textContent = u.name.split(' ')[0];
+
+  // survey state
+  if(STATE.moodSubmitted) {
+    document.getElementById('survey-widget-wrap').style.display = 'none';
+    document.getElementById('survey-done-wrap').style.display = 'block';
+  } else {
+    document.getElementById('survey-widget-wrap').style.display = 'block';
+    document.getElementById('survey-done-wrap').style.display = 'none';
+  }
+
+  // team mood avg for hue
+  const avg = STATE.teamMoodData[STATE.teamMoodData.length-1];
+  updateHueStrip(avg);
+
+  renderPersonalSparkline();
+  renderKudosBoard();
+  renderSurveyHistory();
+}
+
+function updateHueStrip(avg) {
+  const pct = (avg / 10) * 100;
+  document.getElementById('hue-strip').style.cssText = `height:3px;background:linear-gradient(90deg,${avg < 4 ? '#ff6b6b' : avg < 6 ? '#ffb94a' : '#2cff8f'},transparent);background-size:${pct}% 100%;background-repeat:no-repeat`;
+}
+
+function updateSlider(v) {
+  document.getElementById('survey-score-num').textContent = v;
+  const labels = ['','Rough Day 😞','Tough 😕','A Bit Down 😕','Getting There 😐','Neutral 😐',
+    'Pretty Good 🙂','Feeling Good 😊','Really Good 😄','Amazing 🤩','On Top of the World! 🌟'];
+  document.getElementById('survey-score-label').textContent = labels[v] || '';
+}
+
+function submitMood() {
+  const score = document.getElementById('mood-slider').value;
+  STATE.moodSubmitted = true;
+  STATE.moodHistory.push(parseInt(score));
+  document.getElementById('submitted-score').textContent = score;
+  document.getElementById('survey-widget-wrap').style.display = 'none';
+  document.getElementById('survey-done-wrap').style.display = 'block';
+}
+
+function renderPersonalSparkline() {
+  drawLineChart('personal-spark', STATE.moodHistory, '#2cff8f', 'rgba(44,255,143,0.15)');
+}
+
+function drawLineChart(svgId, data, stroke, fill) {
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const w=400, h=120, pad=10;
+  const mn=Math.min(...data)-0.5, mx=Math.max(...data)+0.5;
+  const xs = data.map((_,i) => pad + (i/(data.length-1))*(w-2*pad));
+  const ys = data.map(v => h - pad - ((v-mn)/(mx-mn))*(h-2*pad));
+
+  let path = `M${xs[0]},${ys[0]}`;
+  for(let i=1;i<xs.length;i++){
+    const cpx=(xs[i-1]+xs[i])/2;
+    path += ` C${cpx},${ys[i-1]} ${cpx},${ys[i]} ${xs[i]},${ys[i]}`;
+  }
+
+  const areaPath = path + ` L${xs[xs.length-1]},${h} L${xs[0]},${h} Z`;
+
+  // grid lines
+  let gridLines = '';
+  for(let g=2;g<=10;g+=2){
+    const gy = h - pad - ((g-mn)/(mx-mn))*(h-2*pad);
+    if(gy >= 0 && gy <= h) gridLines += `<line x1="${pad}" y1="${gy}" x2="${w-pad}" y2="${gy}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
+  }
+
+  // dots
+  let dots = '';
+  xs.forEach((x,i) => {
+    dots += `<circle cx="${x}" cy="${ys[i]}" r="3" fill="${stroke}" opacity="0.7"/>`;
+  });
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="lg${svgId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${fill}" stop-opacity="1"/>
+        <stop offset="100%" stop-color="${fill}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${gridLines}
+    <path d="${areaPath}" fill="url(#lg${svgId})" opacity="0.6"/>
+    <path d="${path}" fill="none" stroke="${stroke}" stroke-width="2.5" stroke-linejoin="round"/>
+    ${dots}
+  `;
+}
+
+function renderKudosBoard() {
+  const grid = document.getElementById('kudos-grid');
+  grid.innerHTML = STATE.kudosData.map(k => `
+    <div class="kudos-card">
+      <div class="kudos-msg">"${k.msg}"</div>
+      <div class="kudos-from">
+        <div class="mini-av">${k.sender.split(' ').map(w=>w[0]).join('')}</div>
+        <span><strong>${k.sender}</strong> → ${k.receiver}</span>
+        <span style="margin-left:auto;opacity:.5">${k.ts}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSurveyHistory() {
+  const hist = STATE.moodHistory.slice(-7).reverse();
+  const dates = ['Today','Yesterday','May 21','May 20','May 19','May 18','May 17'];
+  const el = document.getElementById('survey-history');
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${hist.map((s,i) => `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--c-surface2);border-radius:8px;border:1px solid var(--c-border)">
+          <span style="font-size:12px;color:var(--c-text3);width:80px;flex-shrink:0;font-family:'DM Mono',monospace">${dates[i]||'—'}</span>
+          <div style="flex:1;height:6px;background:var(--c-surface3);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${s*10}%;background:${s>=7?'var(--c-accent)':s>=5?'var(--c-amber)':'var(--c-red)'};border-radius:3px;transition:width .6s"></div>
+          </div>
+          <span class="mood-pill ${s>=7?'mood-high':s>=5?'mood-mid':'mood-low'}">${s}/10</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════
+   KUDOS MODAL
+════════════════════════════════════════ */
+function openKudosModal() {
+  document.getElementById('kudos-modal').classList.add('open');
+}
+function closeKudos() {
+  document.getElementById('kudos-modal').classList.remove('open');
+}
+function closeKudosOnBg(e) {
+  if(e.target === document.getElementById('kudos-modal')) closeKudos();
+}
+document.getElementById('kudos-msg').addEventListener('input', function() {
+  document.getElementById('kudos-char').textContent = this.value.length;
+});
+
+function postKudos() {
+  const recv = document.getElementById('kudos-receiver').value;
+  const msg = document.getElementById('kudos-msg').value.trim();
+  if(!recv || !msg) return;
+  const user = STATE.currentUser ? STATE.currentUser.name : 'You';
+  STATE.kudosData.unshift({
+    id: Date.now(), sender: user, receiver: recv,
+    msg, ts: 'Just now'
+  });
+  renderKudosBoard();
+  closeKudos();
+  document.getElementById('kudos-receiver').value = '';
+  document.getElementById('kudos-msg').value = '';
+  document.getElementById('kudos-char').textContent = '0';
+}
+
+/* ════════════════════════════════════════
+   MANAGER DASHBOARD
+════════════════════════════════════════ */
+function renderManagerDashboard() {
+  drawLineChart('team-mood-chart', STATE.teamMoodData, '#5eb6ff', 'rgba(94,182,255,0.15)');
+  renderSprintChart();
+  renderEmployeeTable(STATE.employees);
+}
+
+function renderSprintChart() {
+  const el = document.getElementById('sprint-chart');
+  el.innerHTML = STATE.sprintData.map(s => `
+    <div class="bar-group">
+      <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--c-accent);margin-bottom:4px">${s.v}%</span>
+      <div class="bar" style="height:${s.v}%"></div>
+      <span class="bar-label">${s.label}</span>
+    </div>
+  `).join('');
+}
+
+function renderEmployeeTable(emps) {
+  const tbody = document.getElementById('emp-tbody');
+  const filtered = STATE.currentDept === 'All' ? emps : emps.filter(e => e.dept === STATE.currentDept);
+  tbody.innerHTML = filtered.map(e => {
+    const moodClass = e.avgMood >= 7 ? 'mood-high' : e.avgMood >= 5 ? 'mood-mid' : 'mood-low';
+    return `
+      <tr>
+        <td>
+          <div class="emp-name">
+            <div class="emp-av">${e.initials}</div>
+            <div>
+              <div style="font-weight:500">${e.name}</div>
+              <div style="font-size:12px;color:var(--c-text3)">${e.email}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="chip chip-blue">${e.dept}</span></td>
+        <td><span class="mood-pill ${moodClass}">${e.avgMood.toFixed(1)}</span></td>
+        <td><span style="color:var(--c-amber);font-weight:500">✦ ${e.kudos}</span></td>
+        <td>
+          <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="goDetail(${e.id})">View →</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterDept(el, dept) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  STATE.currentDept = dept;
+  renderEmployeeTable(STATE.employees);
+}
+
+/* ════════════════════════════════════════
+   EMPLOYEE DETAIL
+════════════════════════════════════════ */
+function goDetail(id) {
+  const e = STATE.employees.find(emp => emp.id === id);
+  if(!e) return;
+  document.getElementById('detail-av').textContent = e.initials;
+  document.getElementById('detail-name').textContent = e.name;
+  document.getElementById('detail-dept').textContent = e.dept;
+  document.getElementById('detail-role').textContent = 'Employee';
+  document.getElementById('detail-meta').innerHTML = `<span>📧 ${e.email}</span><span>📅 Joined Jan 2024</span>`;
+  document.getElementById('detail-avg').textContent = e.avgMood.toFixed(1);
+
+  go('detail');
+
+  // draw chart
+  const detailData = Array.from({length:14},()=>Math.round((e.avgMood + (Math.random()-0.5)*3)*10)/10).map(v => Math.min(10,Math.max(1,v)));
+  setTimeout(()=>drawLineChart('detail-chart',detailData,'#2cff8f','rgba(44,255,143,0.15)'),50);
+
+  // kudos received
+  const kudosForEmp = STATE.kudosData.filter(k=>k.receiver === e.name);
+  const kudosEl = document.getElementById('detail-kudos');
+  kudosEl.innerHTML = kudosForEmp.length ? kudosForEmp.map(k=>`
+    <div style="background:var(--c-surface2);border-radius:8px;padding:14px;border:1px solid var(--c-border)">
+      <div style="font-size:14px;line-height:1.6;margin-bottom:8px">"${k.msg}"</div>
+      <div style="font-size:12px;color:var(--c-text3)">from <strong style="color:var(--c-text2)">${k.sender}</strong> · ${k.ts}</div>
+    </div>
+  `).join('') : '<div style="color:var(--c-text3);font-size:14px">No kudos yet.</div>';
+}
+
+/* ════════════════════════════════════════
+   BREAK TIMER
+════════════════════════════════════════ */
+function formatTime(s) {
+  const m = Math.floor(s/60), sec = s%60;
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+setInterval(() => {
+  if(STATE.breakSeconds > 0) STATE.breakSeconds--;
+  const t = formatTime(STATE.breakSeconds);
+  const el1 = document.getElementById('break-timer-text');
+  const el2 = document.getElementById('break-ring-time');
+  const el3 = document.getElementById('footer-break');
+  if(el1) el1.textContent = `Break in ${t}`;
+  if(el2) el2.textContent = t;
+  if(el3) el3.textContent = t;
+
+  const pct = (STATE.breakSeconds / (25*60)) * 100;
+  const ring = document.getElementById('break-ring');
+  if(ring) ring.style.setProperty('--ring-pct', pct + '%');
+
+  if(STATE.breakSeconds === 0) {
+    STATE.breakSeconds = 25 * 60;
+    const banner = document.getElementById('emp-burnout');
+  }
+}, 1000);
+
+/* ════════════════════════════════════════
+   INITIAL RENDER
+════════════════════════════════════════ */
+updateNav();
+</script>
+</body>
+</html>
