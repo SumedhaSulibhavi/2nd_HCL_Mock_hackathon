@@ -1,0 +1,10 @@
+﻿# .NET Build and IDE Outputs
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.log
+
+# Sensitive App Config
+appsettings.Development.json
